@@ -1,7 +1,7 @@
 vorbis
 ======
 
-This Go package provides a "native" ogg vorbis decoder, but still requires cgo, as it uses inline code from [stb_vorbis](http://nothings.org/stb_vorbis/).
+This Go package provides a "native" ogg vorbis decoder, but still requires cgo, as it uses inline code from [stb_vorbis](http://nothings.org/stb_vorbis/). Someday, it won't.
 
 The package exports a single function:
 
