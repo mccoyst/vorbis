@@ -1381,14 +1381,12 @@ static int start_page_no_capturepattern(vorb *f)
    f->end_seg_with_known_loc = -2;
    if (loc0 != ~0 || loc1 != ~0) {
       // determine which packet is the last one that will complete
-      for (i=f->segment_count-1; i >= 0; --i)
+      for (i=f->segment_count-1; ; --i)
          if (f->segments[i] < 255)
             break;
       // 'i' is now the index of the _last_ segment of a packet that ends
-      if (i >= 0) {
-         f->end_seg_with_known_loc = i;
-         f->known_loc_for_packet   = loc0;
-      }
+      f->end_seg_with_known_loc = i;
+      f->known_loc_for_packet   = loc0;
    }
    if (f->first_decode) {
       int i,len;
