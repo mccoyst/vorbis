@@ -3,6 +3,11 @@ package vorbis
 // Additional code placed in the public domain July 2013 by the author: no copyright is claimed.
 
 /*
+
+#ifdef __GNUC__
+#cgo LDFLAGS: -lm
+#endif
+
 // Ogg Vorbis I audio decoder  -- version 0.99996
 //
 // Written in April 2007 by Sean Barrett, sponsored by RAD Game Tools.
