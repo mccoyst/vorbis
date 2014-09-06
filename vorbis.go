@@ -5,6 +5,7 @@ package vorbis
 import (
 	"bytes"
 	"encoding/binary"
+	"errors"
 	"io"
 
 	"github.com/mccoyst/ogg"
@@ -17,8 +18,33 @@ var byteOrder = binary.LittleEndian
 func Decode(r io.Reader) ([]int16, int, error) {
 	var data []int16
 	o := ogg.NewDecoder(r)
+
+	p, err := o.Decode()
+	if err == io.EOF {
+		return nil, 0, errors.New("missing identification header")
+	}
+	if err != nil {
+		return nil, 0, err
+	}
+	_, err = decodeIdentHeader(p.Packet)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	p, err = o.Decode()
+	if err == io.EOF {
+		return nil, 0, errors.New("missing identification header")
+	}
+	if err != nil {
+		return nil, 0, err
+	}
+	_, err = decodeCommentHeader(p.Packet)
+	if err != nil {
+		return nil, 0, err
+	}
+
 	for {
-		p, err := o.Decode()
+		p, err = o.Decode()
 		if err == io.EOF {
 			break
 		}
