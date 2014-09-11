@@ -26,7 +26,7 @@ func Decode(r io.Reader) ([]int16, int, error) {
 	if err != nil {
 		return nil, 0, err
 	}
-	_, err = decodeIdentHeader(p.Packet)
+	_, err = decodeIdentHeader(bytes.NewReader(p.Packet))
 	if err != nil {
 		return nil, 0, err
 	}
@@ -38,7 +38,7 @@ func Decode(r io.Reader) ([]int16, int, error) {
 	if err != nil {
 		return nil, 0, err
 	}
-	_, err = decodeCommentHeader(p.Packet)
+	_, err = decodeCommentHeader(bytes.NewReader(p.Packet))
 	if err != nil {
 		return nil, 0, err
 	}

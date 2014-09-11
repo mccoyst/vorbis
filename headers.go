@@ -3,14 +3,22 @@
 package vorbis
 
 import (
-	"bytes"
 	"encoding/binary"
 	"errors"
 )
 
-type identHeader struct {
+type reader interface {
+	Read([]byte) (int, error)
+	ReadByte() (byte, error)
+}
+
+type commonHeader struct {
 	Type byte
 	Vorbis [6]byte
+}
+
+type identHeader struct {
+	commonHeader
 	VorbisVer uint32
 	AudioChans byte
 	AudioSampleRate uint32
@@ -28,9 +36,17 @@ func (h *identHeader) Blocksize1() uint {
 	return 1 << uint(h.Blocksizes & 0xf0 >> 4)
 }
 
-func decodeIdentHeader(packet []byte) (identHeader, error) {
+type ErrBadBlocksize struct {
+	Value uint
+	Block int
+}
+
+func (e ErrBadBlocksize) Error() string {
+	return "blocksize is out of range"
+}
+
+func decodeIdentHeader(r reader) (identHeader, error) {
 	var h identHeader
-	r := bytes.NewReader(packet)
 	err := binary.Read(r, byteOrder, &h)
 	if err != nil {
 		return h, err
@@ -47,10 +63,10 @@ func decodeIdentHeader(packet []byte) (identHeader, error) {
 	b0 := h.Blocksize0()
 	b1 := h.Blocksize1()
 	if b0 < 64 || b0 > 8192 {
-		return h, errors.New("blocksize_0 is out of range")
+		return h, ErrBadBlocksize{b0, 0}
 	}
 	if b1 < 64 || b1 < 8192 {
-		return h, errors.New("blocksize_1 is out of range")
+		return h, ErrBadBlocksize{b1, 1}
 	}
 	if b0 > b1 {
 		return h, errors.New("blocksize_0 is bigger than blocksize_1")
@@ -64,12 +80,16 @@ type commentHeader struct {
 	Comments []string
 }
 
-func decodeCommentHeader(packet []byte) (commentHeader, error) {
+func decodeCommentHeader(r reader) (commentHeader, error) {
 	var h commentHeader
-	r := bytes.NewReader(packet)
+	var junk commonHeader
+	err := binary.Read(r, byteOrder, &junk)
+	if err != nil {
+		return h, err
+	}
 
 	var vlength uint32
-	err := binary.Read(r, byteOrder, &vlength)
+	err = binary.Read(r, byteOrder, &vlength)
 	if err != nil {
 		return h, err
 	}
