@@ -138,3 +138,37 @@ func decodeCommentHeader(r reader) (commentHeader, error) {
 
 	return h, nil
 }
+
+type setupHeader struct {
+	CodebookCount byte
+	Codebooks []codebook
+	// TimeCount 6 bits
+	// uint16 * TimeCount of zeroes
+	FloorCount byte
+	Floors []floor
+	ResidueCount byte
+	Residues []residue
+	MapCount byte
+	Maps []vmap
+	ModeCount byte
+	Modes []mode
+}
+
+type codebook int
+type floor int
+type residue int
+type mode int
+
+type vmap struct {
+	Submaps byte
+	CouplingSteps byte
+	MappingMagnitudes []byte
+	MappingAngles []byte
+	// 2 bits of zeroes
+	MappingMux []byte
+	SubmapFloors []byte
+	SubmapResidue []byte
+
+}
+
+
