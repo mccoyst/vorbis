@@ -65,7 +65,7 @@ func decodeIdentHeader(r reader) (identHeader, error) {
 	if b0 < 64 || b0 > 8192 {
 		return h, ErrBadBlocksize{b0, 0}
 	}
-	if b1 < 64 || b1 < 8192 {
+	if b1 < 64 || b1 > 8192 {
 		return h, ErrBadBlocksize{b1, 1}
 	}
 	if b0 > b1 {
