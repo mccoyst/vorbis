@@ -52,3 +52,16 @@ func (b *BitReader) nextBit() (byte, error) {
 	b.p = 1
 	return b.buf & 1, nil
 }
+
+func (b *BitReader) ReadInt(n int) (int8, error) {
+	v, err := b.ReadUint(n)
+	if err != nil {
+		return 0, err
+	}
+
+	signbit := 1 << byte(n-1)
+	if v & byte(signbit) != 0 {
+		v |= ^byte(0) << byte(n)
+	}
+	return int8(v), nil
+}
