@@ -1,3 +1,4 @@
+// Package vorbis decodes Ogg Vorbis files.
 package vorbis
 
 // Additional code placed in the public domain July 2013 by the author: no copyright is claimed.
