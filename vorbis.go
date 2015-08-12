@@ -33,7 +33,7 @@ func Decode(r io.Reader) ([]int16, int, error) {
 
 	p, err = o.Decode()
 	if err == io.EOF {
-		return nil, 0, errors.New("missing identification header")
+		return nil, 0, errors.New("missing comment header")
 	}
 	if err != nil {
 		return nil, 0, err
