@@ -5519,7 +5519,7 @@ type Vorbis struct {
 	SampleRate int
 	buf        []byte
 	r          io.Reader
-	v          *_Ctype_struct_stb_vorbis
+	v          *C.struct_stb_vorbis
 }
 
 func (v *Vorbis) read(p []byte) (int, error) {
